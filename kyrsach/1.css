@@ -18,7 +18,7 @@
 	bottom:0%;
 	left:20%;
 }
-#b1:hover
+#b1:onclick
 {
 	transition: left 1s cubic-bezier(0.0, 0.5, 0.5 ,1.0);
 	height:100%;
