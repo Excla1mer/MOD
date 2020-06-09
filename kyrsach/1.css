@@ -35,6 +35,12 @@
     position:absolute;
     left:0%;
 }*/
+#container {
+	height:50%;
+	width:100%;
+	position: absolute;
+    top:80%;
+}
 #add {
 	position: absolute;
     left:45%;
