@@ -10,6 +10,33 @@ var path_points = [];
 var steps = [];
 let fruits = [55.15115814948433,83.03663130027567];
 var BS = []
+var R = 900;
+var BS_names = ["BS0",
+				"BS1",
+				"BS2",
+				"BS3",
+				"BS4",
+				"BS5",
+				"BS6",
+				"BS7"]
+var BS_quantity = 5;
+var BS_cords = [[55.02364180360142, 82.92828024533603],
+				[55.0368015905741, 82.9270670972084],
+				[55.03154587805858, 82.94887597566755],
+				[55.03840032970391, 82.96839874060569],
+				[55.02430027762143, 82.9695145395559],
+				[],
+				[]]
+// A = 46.3 B = 33.9
+function PL(distance) {
+	if(distance >= 1000) {
+
+	} else {
+		if( distance < 1000) {
+
+		}
+	}
+}
 function translate_Speed_to_kord(Speed) {
 	return ((Speed/3.6) * 0.00000835)
 }
@@ -78,7 +105,7 @@ function init() {
 	    	})      	
         	console.log(path_points[k]);   		
     }
-//----------------------------------------------------------------------------------------------------------
+ //----------------------------------------------------------------------------------------------------------
     function move(i) {
     	/*console.log(fruits)
 		for(var j = 1; j <= 8; j++) {
@@ -205,7 +232,7 @@ function init() {
             	break
          }*/
 
-//--------------------------------Перемещение по массиву точек на карте---------------------------------------
+ //--------------------------------Перемещение по массиву точек на карте---------------------------------------
         if(steps[i] == 0 || steps[i] == path_length[i]-1 || path_length[i] == 0) {	
         	get_path(i);
         	steps[i] = 0;       	
@@ -233,9 +260,17 @@ function init() {
             if (j == 2)
             	pos[i][j] = getRandomInRange(min_speed, max_speed);           
         } 
- 
     }
-//------------------------------------------------------------------------------------------------------
+    for(var i = 0; i < BS_quantity; i++) {
+    	BS.push(new ymaps.Circle([BS_cords[i], R]));
+		BS[i].name = BS_names[i];
+		BS[i].properties.set('hintContent', BS[i].name);
+		myMap.geoObjects.add(BS[i]);
+    }
+    // Измерение расстояния в метрах от BS_cords[0] до BS_cords[1]
+    /*var distance = ymaps.coordSystem.geo.getDistance(BS_cords[0], BS_cords[1]);
+    console.log(distance);*/
+ //------------------------------------------------------------------------------------------------------
     function play() {
         var placemark = [];
         for (var i = 0; i <  UE; i++) {
@@ -247,6 +282,9 @@ function init() {
             //console.log([pos[i][0], pos[i][1]]);
         }
 
+        /*
+        var mi = 'mi'
+        document.getElementById('speed_'+mi).value = "Подача";*/
         setTimeout(function() {
             for (var i = 0; i <  UE; i++) {
                 myMap.geoObjects.remove(placemark[i]);
