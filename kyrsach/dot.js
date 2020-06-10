@@ -11,8 +11,9 @@ var S = 0;
 var path_length = [];
 var path_points = [];
 var steps = [];
-var UE_distance = []
-var BS = []
+var UE_distance = [];
+var UE_names = [];
+var BS = [];
 var R = 900;
 var graph = [];
 var chart = anychart.line();
@@ -31,28 +32,20 @@ var BS_cords = [[55.02364180360142, 82.92828024533603],
 				[55.02430027762143, 82.9695145395559],
 				[55.01719047944062,82.94872168499752],
 				[55.04521820286621,82.94750761745556]]
-// A = 46.3 B = 33.9
-anychart.onDocumentLoad(function() {
-  // create chart and set data
-  // as Array of Arrays
-  chart.data({header: ["#", "Euro (€)", "USD ($)", "Pound (£)"],
-   rows:graph});
-  chart.title("AnyChart: Multi-Series Array of Arrays");
-  chart.legend(true);
-  chart.container("container").draw();
-});
+
 function graph_set() {
 		  // create chart and set data
 		  // as Array of Arrays
-	chart.data({header: ["#", "Euro (€)", "USD ($)", "Pound (£)"],
+	chart.data({header: UE_names,
 		rows:graph});
-	chart.title("AnyChart: Multi-Series Array of Arrays");
+	chart.title("График изменения SINR по времени");
 	chart.legend(true);
+    chart.xAxis().title("Время, с");
+    chart.yAxis().title("SINR, дБ");
 	chart.container("container").draw();
 
-	
 }
-
+// A = 46.3 B = 33.9
 function PL(distance) {
     if(distance >= 1000) {
         return (46.3 + 33.9 * Math.log10(2000) - 13.82 * Math.log10(18) - (3.2 * Math.pow(Math.log10(11.75 * 1.5), 2) - 4.97) + (44.9 - 6.55 * Math.log10(2000)) * Math.log10(distance / 1000) + 3);
@@ -249,7 +242,12 @@ function init() {
 function Start(obj) {
     ymaps.ready(init);
     UE = obj.Users.value;
-    z = obj.Size_map.value;
+    //z = obj.Size_map.value;
     min_speed = Number(obj.speed_min.value);
     max_speed = Number(obj.speed_max.value);
+    UE_names[0] = "#";
+    for(var i = 1; i < UE + 1; i++) {
+        UE_names[i] = "User_" + (i - 1);
+    }
+
 }
