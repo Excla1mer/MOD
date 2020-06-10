@@ -2,7 +2,7 @@
 {
 	transition: left 1s cubic-bezier(0.0, 0.5, 0.5 ,1.0);
 	background-color:rgb(110,112,120);
-	height:20%;
+	height:10%;
 	width:100%;
 	position:relative;
 	left:0%;
@@ -10,14 +10,14 @@
 }
 #b1
 {
-	/*background-image: url("1.png");*/
-	background-color: red;
+	background-image: url("1.png");
+	/*background-color: ;*/
 	transition: left 1s cubic-bezier(0.0, 0.5, 0.5 ,1.0);
-	height:60%;
-	width:80%;
+	height:80%;
+	width:90%;
 	position:absolute;
-	bottom:20%;
-	left:10%;
+	bottom:5%;
+	left:5%;
 }
 /*#b1:hover
 {
@@ -39,17 +39,17 @@
 	height:50%;
 	width:100%;
 	position: absolute;
-    top:80%;
+    top:100%;
 }
 #add {
 	position: absolute;
-    left:45%;
-    top:55%;
+    left:50.5%;
+    top:40%;
 }
 #delete {
 	position: absolute;
-    left:55%;
-    top: 55%;
+    left:54.5%;
+    top: 40%;
 }
 #add, #delete {
   display: inline-block;
@@ -91,8 +91,8 @@
 }
 #speed_mi {
   position:absolute;
-  left:45%;
-  top:25%;
+  left:55%;
+  top:5%;
 }
 #speed_ma {
   position:absolute;

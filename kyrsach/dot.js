@@ -150,8 +150,9 @@ function init() {
         	pos[i][0] = path_points[i][steps[i]][0];
         	pos[i][1] = path_points[i][steps[i]][1];
         	
-        	document.getElementById('speed_mi').value = pos[i][2]/time;
+        	//document.getElementById('speed_mi').value = pos[i][2]/time;
         }
+        
         steps[i]++;
         var min = R + 100;
         var a;
@@ -185,7 +186,7 @@ function init() {
             if (j == 1)
                 pos[i][j] = getRandomFloat(82.91863440024133, 82.98034666525598)
             if (j == 2)
-            	pos[i][j] = getRandomInRange(min_speed, max_speed);           
+            	pos[i][j] = 0;           
         } 
     }
     for(var i = 0; i < BS_quantity; i++) {
@@ -208,18 +209,18 @@ function init() {
 			//console.log(path_points);
             myMap.geoObjects.add(placemark[i]);    
             move(i);
+            //placemark[i].properties.set('hintContent', pos[i][2]/time);
             if(pos[i][5] != 'NO') {
-            	console.log("PL(d) = ",PL(pos[i][6]));
-            	console.log("SINR = ",SINR(i));
+            	// console.log("PL(d) = ",PL(pos[i][6]));
+            	// console.log("SINR = ",SINR(i));
             	graph[time][i+1] = SINR(i);
             }
             else {
             	graph[time][i+1] = 0;
-            }
-			
-            //console.log([pos[i][0], pos[i][1]]);
-            
+            }		
+            //console.log([pos[i][0], pos[i][1]]);    
         }
+        document.getElementById('speed_mi').value = pos[0][2]/time;
         graph_set();
         time++;
         /*
@@ -234,17 +235,13 @@ function init() {
             }, 1000);
     }
     play();
-     document.getElementById('delete').onclick = function () {
-        // Для уничтожения используется метод destroy.
-        myMap.destroy();
-    };
 }
 function Start(obj) {
     ymaps.ready(init);
     UE = obj.Users.value;
     //z = obj.Size_map.value;
-    min_speed = Number(obj.speed_min.value);
-    max_speed = Number(obj.speed_max.value);
+    //min_speed = Number(obj.speed_min.value);
+    //max_speed = Number(obj.speed_max.value);
     UE_names[0] = "#";
     for(var i = 1; i < UE + 1; i++) {
         UE_names[i] = "User_" + (i - 1);
