@@ -15,6 +15,7 @@ var UE_distance = []
 var BS = []
 var R = 900;
 var graph = [];
+var chart = anychart.line();
 var BS_names = ["BS0",
 				"BS1",
 				"BS2",
@@ -31,6 +32,27 @@ var BS_cords = [[55.02364180360142, 82.92828024533603],
 				[55.01719047944062,82.94872168499752],
 				[55.04521820286621,82.94750761745556]]
 // A = 46.3 B = 33.9
+anychart.onDocumentLoad(function() {
+  // create chart and set data
+  // as Array of Arrays
+  chart.data({header: ["#", "Euro (€)", "USD ($)", "Pound (£)"],
+   rows:graph});
+  chart.title("AnyChart: Multi-Series Array of Arrays");
+  chart.legend(true);
+  chart.container("container").draw();
+});
+function graph_set() {
+		  // create chart and set data
+		  // as Array of Arrays
+	chart.data({header: ["#", "Euro (€)", "USD ($)", "Pound (£)"],
+		rows:graph});
+	chart.title("AnyChart: Multi-Series Array of Arrays");
+	chart.legend(true);
+	chart.container("container").draw();
+
+	
+}
+
 function PL(distance) {
     if(distance >= 1000) {
         return (46.3 + 33.9 * Math.log10(2000) - 13.82 * Math.log10(18) - (3.2 * Math.pow(Math.log10(11.75 * 1.5), 2) - 4.97) + (44.9 - 6.55 * Math.log10(2000)) * Math.log10(distance / 1000) + 3);
@@ -205,6 +227,7 @@ function init() {
             //console.log([pos[i][0], pos[i][1]]);
             
         }
+        graph_set();
         time++;
         /*
         var mi = 'mi'
