@@ -1,4 +1,3 @@
-//ymaps.ready(init);
 var myMap
 var z = 12
 var UE = 1
@@ -60,7 +59,8 @@ function SINR(uid) {
     var check;
     for (var i = 0; i < BS_quantity; i++) {
         if (BS_names[i] != pos[uid][5]) {
-           sum += PL(UE_distance[uid][i]);
+        	if(UE_distance[uid][i] <= 2500)
+           		sum += PL(UE_distance[uid][i]);
         }
         else {
             check = i;
@@ -89,21 +89,19 @@ function init() {
     MyIconContentLayout = ymaps.templateLayoutFactory.createClass(
 		'<div style="color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
 		);
-
-    //console.log("Hello")
-    function path(k) {
-	    ymaps.route([[pos[k][0], pos[k][1]], [pos[k][3], pos[k][4]]
-	    	]).then(function (route) {
-	    		//myMap.geoObjects.add(route);
-	    		var points = route.getWayPoints(), lastPoint = points.getLength() - 1;
-	    		for (var i = 0; i < route.getPaths().getLength(); i++) {
-	    			way = route.getPaths().get(i);
-	    			myMap.geoObjects.add(way.geometry._coordPath._coordinates);
-	    			t = way.geometry._coordPath._coordinates[0];	    			
-	    		}
-	    	})
-    }
-
+    myMap.events.add('click', function (e) {
+        var coords = e.get('coords');
+        for(var i = BS_quantity; i < BS_quantity + 1; i++) {
+        	BS_cords[i] = coords;
+        	BS_names[i] = "BS" + i;
+	    	BS.push(new ymaps.Circle([BS_cords[i], R]));
+			BS[i].name = BS_names[i];
+			BS[i].properties.set('hintContent', BS[i].name);
+			myMap.geoObjects.add(BS[i]);
+    	}
+    	BS_quantity++;
+    });
+    
  //----------------------Функция для получения массива координат для переменщения от А до Б--------------
     function get_path(k) {
     	console.log("get_path");
@@ -116,13 +114,9 @@ function init() {
         }
     	ymaps.route([[pos[k][0], pos[k][1]], [pos[k][3], pos[k][4]]
 	    	]).then(function (route) {
-	    		//myMap.geoObjects.add(route);
 	    		var points = route.getWayPoints(), lastPoint = points.getLength() - 1;
 	    		var t = 0;
-	    		//pos[i][0] = way.geometry._coordPath._coordinates[0];
-	    		//pos[i][1] = way.geometry._coordPath._coordinates[1];
-    			for (var j = 0; j < route.getPaths().getLength(); j++) {
-	    			
+    			for (var j = 0; j < route.getPaths().getLength(); j++) {	
 	    			way = route.getPaths().get(j);
 	    		 	//console.log(way.geometry._coordPath._coordinates);
 	    		 	path_length[k] = way.geometry._coordPath._coordinates.length;
@@ -130,16 +124,13 @@ function init() {
 	    		 		path_points[k][t] = way.geometry._coordPath._coordinates[t];
 	    		 		//console.log(way.geometry._coordPath._coordinates[t]);
 	    		 		t++;
-	    		 	}
-	    		 	
+	    		 	}	    		 	
 	    		}
-	  
 	    	})      	
         	console.log(path_points[k]);   		
     }
  //----------------------------------------------------------------------------------------------------------
     function move(i) {
-
  //--------------------------------Перемещение по массиву точек на карте---------------------------------------
         if(steps[i] == 0 || steps[i] == path_length[i]-1 || path_length[i] == 0) {	
         	get_path(i);
@@ -149,11 +140,10 @@ function init() {
         	pos[i][2] += (ymaps.coordSystem.geo.getDistance(pos[i], path_points[i][steps[i]])*3.6);
         	pos[i][0] = path_points[i][steps[i]][0];
         	pos[i][1] = path_points[i][steps[i]][1];
-        	
-        	//document.getElementById('speed_mi').value = pos[i][2]/time;
         }
         
         steps[i]++;
+ //--------------------------------Расчет расстояний до БС-й----------------------------------------------
         var min = R + 100;
         var a;
         for(var j = 0; j < BS_quantity; j++) {
@@ -169,7 +159,6 @@ function init() {
         }
         else
         	pos[i][5] = 'NO';
-        console.log("BS_name =", pos[i][5])
     }
  //---------------------------------------------------------------------------------------------------
  //-----------------Старотовые инициализации массивов, стартовых точек юзеров и позиций БС------------  
@@ -205,28 +194,22 @@ function init() {
         graph[time][0] = time;
         for (var i = 0; i <  UE; i++) {
             placemark[i] = new ymaps.Placemark([pos[i][0], pos[i][1]]);
-           	//get_path(i);
 			//console.log(path_points);
             myMap.geoObjects.add(placemark[i]);    
             move(i);
-            //placemark[i].properties.set('hintContent', pos[i][2]/time);
+            placemark[i].properties.set('hintContent', UE_names[i+1]);
             if(pos[i][5] != 'NO') {
-            	// console.log("PL(d) = ",PL(pos[i][6]));
-            	// console.log("SINR = ",SINR(i));
+            	//console.log(i ,"  PL(d) = ",PL(pos[i][6]));
             	graph[time][i+1] = SINR(i);
             }
             else {
             	graph[time][i+1] = 0;
             }		
-            //console.log([pos[i][0], pos[i][1]]);    
+            //console.log("#",i," Откуда", pos[i][0], pos[i][1], "Куда", pos[i][3], pos[i][4], "БС -", pos[i][5], "Расстояние -", pos[i][6]);    
         }
         document.getElementById('speed_mi').value = pos[0][2]/time;
         graph_set();
-        time++;
-        /*
-        var mi = 'mi'
-        document.getElementById('speed_'+mi).value = "Подача";*/
-        
+        time++;       
         setTimeout(function() {
             for (var i = 0; i <  UE; i++) {
                 myMap.geoObjects.remove(placemark[i]);
@@ -238,13 +221,9 @@ function init() {
 }
 function Start(obj) {
     ymaps.ready(init);
-    UE = obj.Users.value;
-    //z = obj.Size_map.value;
-    //min_speed = Number(obj.speed_min.value);
-    //max_speed = Number(obj.speed_max.value);
+    UE = Number(obj.Users.value);
     UE_names[0] = "#";
     for(var i = 1; i < UE + 1; i++) {
         UE_names[i] = "User_" + (i - 1);
     }
-
 }
